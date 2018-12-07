@@ -1,9 +1,11 @@
 {
   "dependencies": {
+    "body-parser": "^1.18.3",
     "ethereumjs-wallet": "^0.6.2",
     "express": "^4.16.4",
     "loom-js": "^1.36.0",
     "loom-truffle-provider": "^0.8.0",
+    "nodemon": "^1.18.7",
     "truffle-hdwallet-provider": "^0.0.6",
     "web3": "^1.0.0-beta.36",
     "webpack": "^4.27.1",
