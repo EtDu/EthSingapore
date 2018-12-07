@@ -1,9 +1,8 @@
 pragma solidity ^0.4.24;
 
 import "./IERC20.sol";
-import "./SafeMath.sol";
 import "./ERC20Detailed.sol";
-import "./Ownable.sol";
+import "./SafeMath.sol";
 
 /*
 * @dev
@@ -19,11 +18,8 @@ import "./Ownable.sol";
  * all accounts just by listening to said events. Note that this isn't required by the specification, and other
  * compliant implementations may not do it.
  */
-contract ERC20 is Ownable, ERC20Detailed {
+contract ERC20 is ERC20Detailed {
     using SafeMath for uint256;
-
-    event securityPurchase(address purchaser, uint256 received);
-    event rateUpdate(uint256 rate);
 
     mapping(address => uint256) private _balances;
 
@@ -31,15 +27,9 @@ contract ERC20 is Ownable, ERC20Detailed {
 
     uint256 private _totalSupply;
 
-    /*
-    * @dev 1 ETH : [_rate] tokens
-    */
-    uint256 private _rate;
-
-    constructor  (uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals) public ERC20Detailed(name, symbol, decimals) {
+    constructor  (uint256 totalSupply, string name, string symbol, uint8 decimals) public ERC20Detailed(name, symbol, decimals) {
         _totalSupply = totalSupply;
-        _balances[owner()] = _totalSupply;
-        _rate = initialRate;
+        _balances[msg.sender] = _totalSupply;
     }
 
     /**
@@ -47,13 +37,6 @@ contract ERC20 is Ownable, ERC20Detailed {
     */
     function totalSupply() public view returns (uint256) {
         return _totalSupply;
-    }
-
-    /**
-    * @dev Current ETH:token rate
-    */
-    function currentRate() public view returns (uint256) {
-        return _rate;
     }
 
     /**
@@ -73,21 +56,6 @@ contract ERC20 is Ownable, ERC20Detailed {
      */
     function allowance(address owner, address spender) public view returns (uint256) {
         return _allowed[owner][spender];
-    }
-
-    function purchaseSecurity() public payable {
-        uint256 token;
-
-        token = msg.value.mul(_rate).div(1e18);
-        _transfer(owner(), msg.sender, token);
-
-        emit securityPurchase(msg.sender, token);
-    }
-
-    function updateRate(uint256 newRate) public onlyOwner() {
-        _rate = newRate;
-
-        emit rateUpdate(_rate);
     }
 
     /**
