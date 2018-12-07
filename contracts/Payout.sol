@@ -12,9 +12,13 @@ contract Payout is Ownable {
     mapping(address => uint256) lastUpdated;
     mapping(bytes32 => uint256) rates;
 
+    /*
+    * @dev interval in seconds
+    */
+    uint256 private _interval;
 
-    constructor() public {
-
+    constructor(uint256 interval) public {
+        _interval = interval;
     }
 
     function updateRate(bytes32 rate, uint256 value) external onlyOwner() {
@@ -28,7 +32,7 @@ contract Payout is Ownable {
         uint256 rate = _calculateRate(token);
 
         //can utilise delegatecalls for different algorithms?
-        total = rate.mul(now.sub(lastUpdated[owner]).div(30 seconds));
+        total = rate.mul(now.sub(lastUpdated[owner]).div(_interval));
 
         lastUpdated[owner] = now;
 
