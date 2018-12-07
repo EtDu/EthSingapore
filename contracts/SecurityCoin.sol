@@ -7,7 +7,6 @@ import "./ERC20.sol";
 * @dev
 */
 contract SecurityCoin is Ownable, ERC20 {
-
     event securityPurchase(address purchaser, uint256 received);
     event rateUpdate(uint256 rate);
 
@@ -33,7 +32,7 @@ contract SecurityCoin is Ownable, ERC20 {
         emit securityPurchase(msg.sender, token);
     }
 
-    function updateRate(uint256 newRate) public onlyOwner() {
+    function updateRate(uint256 newRate) external onlyOwner() {
         _rate = newRate;
 
         emit rateUpdate(_rate);
