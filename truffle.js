@@ -1,18 +1,45 @@
-/*
- * NB: since truffle-hdwallet-provider 0.0.5 you must wrap HDWallet providers in a 
- * function when declaring them. Failure to do so will cause commands to hang. ex:
- * ```
- * mainnet: {
- *     provider: function() { 
- *       return new HDWalletProvider(mnemonic, 'https://mainnet.infura.io/<infura-key>') 
- *     },
- *     network_id: '1',
- *     gas: 4500000,
- *     gasPrice: 10000000000,
- *   },
- */
+const { readFileSync } = require('fs')
+const path = require('path')
+const { join } = require('path')
+const LoomTruffleProvider = require('loom-truffle-provider')
+const HDWalletProvider = require('truffle-hdwallet-provider')
 
 module.exports = {
-  // See <http://truffleframework.com/docs/advanced/configuration>
-  // to customize your Truffle configuration!
-};
+  contracts_build_directory: join(__dirname, './src/contracts'),
+  networks: {
+    loom_dapp_chain: {
+      provider: function () {
+        const privateKey = readFileSync(path.join(__dirname, 'private_key'), 'utf-8')
+        const chainId = 'default'
+        const writeUrl = 'http://127.0.0.1:46658/rpc'
+        const readUrl = 'http://127.0.0.1:46658/query'
+        const loomTruffleProvider = new LoomTruffleProvider(chainId, writeUrl, readUrl, privateKey)
+        loomTruffleProvider.createExtraAccountsFromMnemonic("gravity top burden flip student usage spell purchase hundred improve check genre", 10)
+        return loomTruffleProvider
+      },
+      network_id: '*'
+    },
+    extdev_plasma_us1: {
+      provider: function () {
+        const privateKey = readFileSync(path.join(__dirname, 'extdev_private_key'), 'utf-8')
+        const chainId = 'extdev-plasma-us1'
+        const writeUrl = 'http://extdev-plasma-us1.dappchains.com:80/rpc'
+        const readUrl = 'http://extdev-plasma-us1.dappchains.com:80/query'
+        return new LoomTruffleProvider(chainId, writeUrl, readUrl, privateKey)
+      },
+      network_id: 'extdev-plasma-us1'
+    },
+    kovan: {
+      provider: function () {
+        const mnemonic = readFileSync(path.join(__dirname, 'kovan_mnemonic'), 'utf-8')
+        if (!process.env.INFURA_API_KEY) {
+          throw new Error("INFURA_API_KEY env var not set")
+        }
+        return new HDWalletProvider(mnemonic, `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`, 0, 10)
+      },
+      network_id: 4,
+      gasPrice: 15000000001,
+      skipDryRun: true
+    }
+  }
+}
