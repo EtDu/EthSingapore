@@ -52,7 +52,7 @@ contract ERC20 is Ownable, ERC20Detailed {
     /**
     * @dev Current ETH:token rate
     */
-    function curentRate() public view returns (uint256) {
+    function currentRate() public view returns (uint256) {
         return _rate;
     }
 
