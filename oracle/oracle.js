@@ -40,7 +40,7 @@ const Oracle = {
     initializeEvent: null,
 
     newKovanWeb3: function () {
-        this.kovanWeb3Inst = new Web3(new Web3.providers.HttpProvider(`https://kovan.infura.io/${process.env.INFURA_API_KEY}`))
+        this.kovanWeb3Inst = new Web3(new Web3.providers.WebsocketProvider('wss://kovan.infura.io/ws'))
         console.log("Successfully created Kovan web3 object")
 
         this.newKovanContract()
@@ -52,18 +52,20 @@ const Oracle = {
         const ABI = securityCoinJSON.abi
         this.kovanContractAddress = securityCoinJSON.networks['42'].address
 
-        this.kovanContractInst.securityCoinContract = this.kovanWeb3Inst.eth.contract(ABI).at(this.kovanContractAddress)
+        this.kovanContractInst.securityCoinContract = new this.kovanWeb3Inst.eth.Contract(ABI, this.kovanContractAddress, { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })
+        
 
         this.listenForKovanEvents()
         return this.setKovanCoinbase()
     },
 
     listenForKovanEvents: function () {
-        this.kovanContractInst.securityCoinContract.securityPurchase({}, {
-            fromBlock: '0',
-            toBlock: 'latest'
-        }).watch(function (error, event) {
-            console.log(event)
+        this.kovanContractInst.securityCoinContract.events.securityPurchase({ fromBlock: 0, toBlock: 'latest'},(err, events) => {
+            if (err) {
+                console.log(err)
+            } else {
+                this.extDevContractInst.payoutContract.methods.calculate(events.returnValues[0], events.returnValues[1]).send()
+            }
         })
     },
 
@@ -94,31 +96,30 @@ const Oracle = {
     newExtDevContract: function () {
 
         const from = LocalAddress.fromPublicKey(this.extDevPublicKey).toString()
-        console.log(from)
 
         const payoutJSON = JSON.parse(fs.readFileSync('./src/contracts/Payout.json', 'utf-8'))
         const ABI = payoutJSON.abi
         this.extDevContractAddress = payoutJSON.networks.default.address
-        this.extDevContractInst = this.extDevWeb3Inst.eth.contract(ABI, this.extDevContractAddress, { from })
-
+        this.extDevContractInst.payoutContract = new this.extDevWeb3Inst.eth.Contract(ABI, this.extDevContractAddress, { from })
+        
         this.listenForExtDevEvents()
         return this.setExtDevCoinbase()
     },
 
     listenForExtDevEvents: function() {
-        this.extDevContractInst.payoutsCalculated({}, (err, event) => {
+        this.extDevContractInst.payoutContract.events.dividendsCalculated({}, (err, event) => {
             if (err) {
                 return console.error(err)
             }
-            console.log(event.returnValues[1])
+            console.log(event.returnValues)
         })
     },
 
-    setExtDevCoinbase: function () {
+    setExtDevCoinbase: async function () {
         this.extDevCoinbase = (LocalAddress.fromPublicKey(publicKey).toString())
         console.log('EXTDEV COINBASE SET')
     },
 }
-
 Oracle.newKovanWeb3()
 Oracle.newExtDevWeb3()
+

@@ -7,7 +7,8 @@
     "loom-truffle-provider": "^0.8.0",
     "nodemon": "^1.18.7",
     "truffle-hdwallet-provider": "^0.0.6",
-    "web3": "0.20.6",
+    "vuex": "^3.0.1",
+    "web3": "^1.0.0-beta.36",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
@@ -22,5 +23,8 @@
     "deploy:kovan": "truffle deploy --network kovan",
     "deploy:reset:kovan": "truffle deploy --reset --network kovan",
     "gen:kovan-key": "node ./scripts/gen-eth-key.js kovan"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
   }
 }

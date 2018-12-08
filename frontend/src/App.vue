@@ -4,13 +4,27 @@
       <b-nav-item to="companyui"> Security Issuance </b-nav-item>
       <b-nav-item to="customerui"> Customer Dashboard </b-nav-item>
     </b-navbar>
-    <router-view></router-view>
+    <div v-if="$store.state.web3.status == 'disabled'">
+      Please unlock metamask.
+    </div>
+    <div v-else-if="$store.state.web3.isKovan == false">
+      Please Select kovan testnet in metamask.
+    </div>
+    <div v-else>
+      <router-view ></router-view>
+    </div>
   </div>
 </template>
 
 <script>
+import store from './store'
 export default {
-  name: 'app'
+  name: 'app',
+  store: store,
+  created () {
+    store.dispatch("onload")
+    console.log(store)
+  }
 }
 </script>
 

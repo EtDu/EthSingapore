@@ -6,8 +6,10 @@ import "./SafeMath.sol";
 contract Payout is Ownable {
     using SafeMath for uint256;
 
-    event rateUpdate(bytes32 rate, uint256 newValue);
+    event rateUpdate(bytes32 rate, uint newValue);
     event securityBalanceUpdate(address owner, uint amount);
+    event dividendsCalculated(address owner, uint amount);
+    event payoutsWithdrawn(address owner, uint amount);
 
     mapping(address => uint256) securityBalance;
     mapping(address => uint256) dividendBalance;
@@ -35,26 +37,27 @@ contract Payout is Ownable {
         emit securityBalanceUpdate(owner, amount);
     }
 
-    function calculate(address owner, uint256 token) public onlyOwner {
-        uint256 total;
-        // uint256 rate = _calculateRate(token);
-
-        total = securityBalance[owner].div(_interval).mul(now.sub(lastUpdated[owner]));
+    function calculate(address owner, uint256 token) public {
+        uint256 total = securityBalance[owner].div(_interval).mul(now.sub(lastUpdated[owner]));
 
         updateSecurityBalance(owner, token);
+
+        emit securityBalanceUpdate(owner, token);
 
         lastUpdated[owner] = now;
 
         dividendBalance[owner] = dividendBalance[owner].add(total);
 
+        emit dividendsCalculated(owner, total);
+    
 
     }
 
-    // function _calculateRate(uint256 token) internal returns (uint256 rate){
+    function withdraw(address owner) public onlyOwner() {
+        uint256 dividend = dividendBalance[owner];
 
-    //     //conditional parameters i.e. if token > 5 return rates['something']
+        dividendBalance[owner] = 0;
 
-    //     return 1;
-    // }
-
+        emit payoutsWithdrawn(owner, dividend);
+    }
 }
