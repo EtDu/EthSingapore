@@ -1,16 +1,17 @@
 <template>
-  <b-table hover :items="items" :fields="fields"></b-table>
+  <b-card  :title="name">
+      <b-table hover :items="items" :fields="fields"></b-table>
+  </b-card>
 </template>
 <script>
 export default {
   name: 'Payouts',
+  props: ['name'],
   data () {
     return {
       // Note 'isActive' is left out and will not appear in the rendered table
-      fields: [ 'Timestamp', 'Issued', 'Profit'],
-      items: [
-        { Timestamp: Date.now(), Issued: '2', Profit: '2' },
-      ]
+      fields: [ 'Time', 'Issued', 'Profit'],
+      items: []
     }
   },
   created () {
@@ -18,7 +19,10 @@ export default {
   },
   methods: {
     updateFakeData () {
-      setInterval(() => this.items.push( { Timestamp: Date.now(), Issued: '2', Profit: '2' } ))
+      setInterval(() => {
+        this.items.push( { Time: new Date(Date.now()).toUTCString(), Issued: '2', Profit: '2' } )
+        this.items.slice(this.items.length -10)
+      }, 30000)
     }
   }
 }
