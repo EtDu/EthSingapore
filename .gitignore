@@ -1,9 +1,5 @@
 node_modules
 extdev_private_key
 kovan_private_key
-<<<<<<< HEAD
 frontend/node_modules
 .idea/*
-=======
-frontend/node_modules
->>>>>>> gitignore

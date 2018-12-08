@@ -52,11 +52,6 @@ dividendsContract.events.dividendsCalculated({}, (err, event) => {
 
 
 const oracle = {
-    web3Inst: null,
-    contractInst: {},
-    coinbase: null,
-    initializeEvent: null,
-    contractAddress: null,
 
     listenForEvents: function () {
         oracle.contractInst.lotteryContract.lottoInitialized({}, {
