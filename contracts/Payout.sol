@@ -28,8 +28,8 @@ contract Payout is Ownable {
         return _rate;
     }
 
-    function getLastUpdated(address owner, address securityCoinContract) public view returns (uint256){
-        return _lastUpdated[owner][securityCoinContract];
+    function getInterval() public view returns (uint256){
+        return _interval;
     }
 
     function calculate(address owner, address securityCoinContract, uint256 amount) public onlyOwner() {
