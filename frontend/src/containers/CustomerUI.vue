@@ -2,7 +2,7 @@
 
 <div>
   <Assets/>
-  <Payouts/>
+  <Payouts name="ShitCoin"/>
 </div>
 </template>
 <script>
