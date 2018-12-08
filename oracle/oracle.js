@@ -20,26 +20,24 @@ const client = new Client(
 // The address for the caller of the function
 const from = LocalAddress.fromPublicKey(publicKey).toString()
 
-const contractJSON = JSON.parse(fs.readFileSync('./build/contracts/Dividends.json', 'utf-8'))
+const contractJSON = JSON.parse(fs.readFileSync('./build/contracts/Payout.json', 'utf-8'))
 const ABI = contractJSON.abi
 const contractAddress = contractJSON.networks.default.address
 
 // Instantiate web3 client using LoomProvider
 const web3 = new Web3(new LoomProvider(client, privateKey))
 
-const dividendsContract = new web3.eth.Contract(ABI, contractAddress, { from })
+const payoutContract = new web3.eth.Contract(ABI, contractAddress, { from })
 
 const loomTruffleProvider = new LoomTruffleProvider(chainId, writeUrl, readUrl, privateKey)
 const loomProvider = loomTruffleProvider.getProviderEngine()
 
 const localAddr = (LocalAddress.fromPublicKey(publicKey).toString())
 
-dividendsContract.methods.calculateDividends(localAddr, 4).send()
+payoutContract.methods.calculate(localAddr, 4).send()
+// const testWeb3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
 
-
-const testWeb3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
-
-dividendsContract.events.dividendsCalculated({}, (err, event) => {
+payoutContract.events.dividendsCalculated({}, (err, event) => {
     if (err) {
         return console.error(err)
     }
