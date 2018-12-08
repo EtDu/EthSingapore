@@ -94,8 +94,9 @@ export default {
     toggleDividends(row) {
       this.selectedToken = row.item.obj
     },
-    handlePayout() {
-      console.log('oayo')
+    async handlePayout() {
+      const tx = await this.selectedToken.triggerWithdraw()
+      console.log(tx)
     }
   },
   asyncComputed: {
