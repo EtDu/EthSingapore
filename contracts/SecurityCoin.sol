@@ -6,6 +6,23 @@ import "./ERC20.sol";
 /*
 * @dev
 */
+
+contract SecurityCoinFactory {
+    address[] public Tokens;
+
+    function newSecurityCoin(uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals)
+    public
+    returns (address)
+    {
+        address newCoinAddress = new SecurityCoin(totalSupply, initialRate, name, symbol, decimals);
+        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
+        Tokens.push(newCoinAddress);
+        return newCoinAddress;
+    }
+
+    event NewSecurityCoin(address indexed newCoinAdress, uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals);
+}
+
 contract SecurityCoin is Ownable, ERC20 {
     event securityPurchase(address purchaser, uint256 received);
     event rateUpdate(uint256 rate);
