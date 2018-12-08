@@ -8,6 +8,8 @@ import "./ERC20.sol";
 */
 
 contract SecurityCoinFactory {
+    event NewSecurityCoin(address indexed newCoinAdress, uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals);
+
     address[] public Tokens;
 
     function newSecurityCoin(uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals)
@@ -15,12 +17,12 @@ contract SecurityCoinFactory {
     returns (address)
     {
         address newCoinAddress = new SecurityCoin(totalSupply, initialRate, name, symbol, decimals);
-        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
         Tokens.push(newCoinAddress);
-        return newCoinAddress;
-    }
 
-    event NewSecurityCoin(address indexed newCoinAdress, uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals);
+        return newCoinAddress;
+
+        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
+    }
 }
 
 contract SecurityCoin is Ownable, ERC20 {
@@ -44,10 +46,10 @@ contract SecurityCoin is Ownable, ERC20 {
     function purchaseSecurity() public payable {
         uint256 token;
 
-        token = msg.value.mul(_rate).div(1e18);
+        token = msg.value.mul(_rate);
         _transfer(owner(), msg.sender, token);
 
-        emit securityPurchase(msg.sender, token);
+        emit securityPurchase(msg.sender, balanceOf(msg.sender));
     }
 
     function updateRate(uint256 newRate) external onlyOwner() {
