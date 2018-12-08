@@ -94,12 +94,6 @@ export default {
     toggleDividends(row) {
       this.selectedToken = row.item.obj
     },
-    updateFakeData () {
-      setInterval(() => {
-        this.dividendItems.push( { Time: new Date(Date.now()).toUTCString(), Issued: '2', Profit: '2' } )
-        this.dividendItems.slice(this.items.length -10)
-      }, 30000)
-    },
     handlePayout() {
       console.log('oayo')
     }
@@ -116,7 +110,7 @@ export default {
     }, 
     async userDividends () {
       const tokenAdr = this.selectedToken.address
-      const userAdr =  await store.state.web.provider.getSigner().getAddress()
+      const userAdr =  await store.state.web3.provider.getSigner().getAddress()
       const qty = await this.selectedToken.balanceOf(userAdr)
       const result = await fetch(`https://ethsg.hamisu.me/${tokenAdr}/${userAdr}/${qty}`)
       console.log(result)
