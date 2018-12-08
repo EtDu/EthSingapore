@@ -11,10 +11,14 @@ contract Payout is Ownable {
     event dividendsCalculated(address owner, uint amount);
     event payoutsWithdrawn(address owner, uint amount);
 
-    mapping(address => uint256) securityBalance;
-    mapping(address => uint256) dividendBalance;
-    mapping(address => uint256) lastUpdated;
-    mapping(bytes32 => uint256) rates;
+    mapping(address => mapping(address => uint256)) securityBalance;
+    mapping(address => mapping(address => uint256)) lastUpdated;
+    mapping(address => uint256) dividends;
+
+    /*
+    * @dev 1/rate
+    */
+    uint256 private _rate;
 
     /*
     * @dev interval in seconds
@@ -37,14 +41,12 @@ contract Payout is Ownable {
         emit securityBalanceUpdate(owner, amount);
     }
 
-    function calculate(address owner, uint256 token) public {
-        uint256 total = securityBalance[owner].div(_interval).mul(now.sub(lastUpdated[owner]));
+    function calculate(address owner, address securityCoin, uint256 token) public onlyOwner() {
+        uint256 total = securityBalance[owner][securityCoin].div(_interval).mul(now.sub(lastUpdated[owner][securityCoin]));
 
-        updateSecurityBalance(owner, token);
+        securityBalance[owner][securityCoin] = token;
 
-        emit securityBalanceUpdate(owner, token);
-
-        lastUpdated[owner] = now;
+        lastUpdated[owner][securityCoin] = now;
 
         dividendBalance[owner] = dividendBalance[owner].add(total);
 
