@@ -37,6 +37,8 @@ const Oracle = {
     extDevCoinbase: null,
     extDevAccounts: null,
 
+    tokenAddrs: [],
+    newTokenInstances: [],
     initializeEvent: null,
 
     newKovanWeb3: function () {
@@ -60,10 +62,39 @@ const Oracle = {
     },
 
     listenForKovanEvents: function () {
+        this.kovanContractInst.securityCoinContract.events.NewSecurityCoin({ fromBlock: 0, toBlock: 'latest' }, (err, events) => {
+            if (err) {
+                console.log(err)
+            } else {
+                this.tokenAddrs.push(events.returnValues[0])
+                const ABI = securityCoinJSON.abi
+
+                for (let i=0; i<this.tokenAddrs.length; i++) {
+
+                    this.newTokenInstances.push(new this.kovanWeb3Inst.eth.Contract(ABI, this.tokenAddrs[i], { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })) 
+
+                    this.newTokenInstances[i].events.securityPurchase({ fromBlock: 0, toBlock: 'latest' }, (err, newEvents) => {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            this.extDevContractInst.payoutContract.methods.calculate(newEvents.returnValues[0], newEvents.returnValues[1]).send()
+                        }
+                    })
+                    
+
+                }
+
+
+
+            }
+        })
+
+
         this.kovanContractInst.securityCoinContract.events.securityPurchase({ fromBlock: 0, toBlock: 'latest'},(err, events) => {
             if (err) {
                 console.log(err)
             } else {
+                console.log('=========' + events.returnValues)
                 this.extDevContractInst.payoutContract.methods.calculate(events.returnValues[0], events.returnValues[1]).send()
             }
         })

@@ -18,10 +18,10 @@ contract SecurityCoinFactory {
     {
         address newCoinAddress = new SecurityCoin(totalSupply, initialRate, name, symbol, decimals);
         Tokens.push(newCoinAddress);
+        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
 
         return newCoinAddress;
 
-        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
     }
 }
 
