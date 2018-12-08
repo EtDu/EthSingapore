@@ -9,9 +9,9 @@ contract Payout is Ownable {
     event dividendsCalculated(address owner, uint256 amount, uint256 total);
     event payoutsWithdrawn(address owner, uint256 amount);
 
-    mapping(address => mapping(address => uint256)) securityBalance;
-    mapping(address => mapping(address => uint256)) lastUpdated;
-    mapping(address => uint256) dividendBalance;
+    mapping(address => mapping(address => uint256)) private _securityBalance;
+    mapping(address => mapping(address => uint256)) private _lastUpdated;
+    mapping(address => uint256) private _dividendBalance;
 
     // @dev 1/rate
     uint256 private _rate;
@@ -24,27 +24,35 @@ contract Payout is Ownable {
         _interval = interval;
     }
 
+    function getRate() public view returns (uint256){
+        return _rate;
+    }
+
+    function getLastUpdated(address owner, address securityCoinContract) public view returns (uint256){
+        return _lastUpdated[owner][securityCoinContract];
+    }
+
     function calculate(address owner, address securityCoinContract, uint256 amount) public onlyOwner() {
-        uint256 secBal = securityBalance[owner][securityCoinContract];
-        uint256 lasUp = lastUpdated[owner][securityCoinContract];
+        uint256 secBal = _securityBalance[owner][securityCoinContract];
+        uint256 lasUp = _lastUpdated[owner][securityCoinContract];
 
         uint256 dividend = secBal.div(_rate).mul((now.sub(lasUp)).div(_interval));
 
-        securityBalance[owner][securityCoinContract] = amount;
+        _securityBalance[owner][securityCoinContract] = amount;
 
-        lastUpdated[owner][securityCoinContract] = now;
+        _lastUpdated[owner][securityCoinContract] = now;
 
-        dividendBalance[owner] = dividendBalance[owner].add(dividend);
+        _dividendBalance[owner] = _dividendBalance[owner].add(dividend);
 
-        emit dividendsCalculated(owner, dividend, dividendBalance[owner]);
+        emit dividendsCalculated(owner, dividend, _dividendBalance[owner]);
     }
 
     function withdraw(address owner) public onlyOwner() {
-        require(dividendBalance[owner] > 0);
+        require(_dividendBalance[owner] > 0);
 
-        uint256 dividend = dividendBalance[owner];
+        uint256 dividend = _dividendBalance[owner];
 
-        dividendBalance[owner] = 0;
+        _dividendBalance[owner] = 0;
 
         emit payoutsWithdrawn(owner, dividend);
     }
