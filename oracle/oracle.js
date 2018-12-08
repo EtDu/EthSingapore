@@ -120,7 +120,7 @@ const Oracle = {
 
     newExtDevWeb3: function () {
 
-        let baseKey = new Buffer(fs.readFileSync('extdev_private_key', 'utf-8'), 'base64')
+        let baseKey = new Buffer(fs.readFileSync('private_key', 'utf-8'), 'base64')
         this.extDevPrivateKey = baseKey.toString('hex')
         this.extDevPublicKey = CryptoUtils.publicKeyFromPrivateKey(privateKey)
 

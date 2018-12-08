@@ -113,8 +113,9 @@ export default {
       const tokenAdr = this.selectedToken.address
       const userAdr =  await store.state.web3.provider.getSigner().getAddress()
       const qty = await this.selectedToken.balanceOf(userAdr)
-      const result = await fetch(`https://ethsg.hamisu.me/${tokenAdr}/${userAdr}/${qty}`)
-      console.log(result)
+      const result = await fetch(`getData/${tokenAdr}/${userAdr}/${qty}`)
+      const json = await result.json()
+      console.log(json)
     }
   },
   store: store

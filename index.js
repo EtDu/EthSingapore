@@ -19,11 +19,18 @@ routes.get('/getData/:coinAddr/:ownerAddr/:qty', async function (req, res) {
     const coinAddress = req.params.coinAddr
     const ownerAddress = req.params.ownerAddr
     const amount = req.params.qty
+    console.log(req)
     await oracle.Oracle.calculate(ownerAddress, coinAddress, amount)
 
+
     const rate = await oracle.Oracle.getRate()
+    .catch(e => console.log)
     const interval = await oracle.Oracle.getInterval()
     const dividends = await oracle.Oracle.getDividends(ownerAddress)
+    .catch(e => {
+        console.log('getDividends')
+        console.log(e)
+    })
 
     res.status(200).send({
         rate: rate,
