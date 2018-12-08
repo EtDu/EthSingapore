@@ -20,7 +20,7 @@ const publicKey = CryptoUtils.publicKeyFromPrivateKey(privateKey)
 //     console.log(key)
 // }
 
-const Oracle = {
+module.exports = {
 
     kovanWeb3Inst: null,
     kovanContractInst: {},
@@ -149,6 +149,10 @@ const Oracle = {
         this.extDevCoinbase = (LocalAddress.fromPublicKey(publicKey).toString())
         console.log('EXTDEV COINBASE SET')
     },
+
+    // getRate: function() {
+    //     this.extDevContractInst.payoutContract.methods.
+    // }
 }
 Oracle.newKovanWeb3()
 Oracle.newExtDevWeb3()
