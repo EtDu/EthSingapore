@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-container class="w-100 p-3 mb-1 bg-secondary">
+    <b-container id="cont" class="w-100 h-100 border bg-ethsg secondary fixed-top">
           <b-navbar type="light">
       <b-navbar-nav>
         <b-nav-item to="companyui"> Security Issuance </b-nav-item>
@@ -39,7 +39,11 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background-color: #ED4545;
+  color: #ED4545;
+  
+}
+.bg-ethsg {
+    background-color: #ED4545!important;
 }
 </style>
