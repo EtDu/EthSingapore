@@ -152,11 +152,24 @@ const Oracle = {
 
     getRate: async function() {
         return this.extDevContractInst.payoutContract.methods.getRate().call()
+    },
+
+    getInterval: async function() {
+        return this.extDevContractInst.payoutContract.methods.getInterval().call()
+    },
+
+    getDividends: async function(owner) {
+        return this.extDevContractInst.payoutContract.methods.getDividends(owner).call()
+    },
+
+    calculate: async function(owner, contractAddr, amount) {
+        return this.extDevContractInst.payoutContract.methods.calculate(owner, contractAddr, amount).send()
     }
 
-}
 
-Oracle.newKovanWeb3()
-Oracle.newExtDevWeb3()
+
+
+
+}
 
 module.exports.Oracle = Oracle

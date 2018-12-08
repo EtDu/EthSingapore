@@ -19,9 +19,11 @@ contract SecurityCoinFactory {
 
         tokens.push(newCoinAddress);
 
+        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
+
         return newCoinAddress;
 
-        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
+        
     }
 
     function getTokenAddress(uint256 index) public view returns (address) {
@@ -33,6 +35,7 @@ contract SecurityCoin is Ownable, ERC20 {
 
     event securityPurchase(address purchaser, uint256 received);
     event rateUpdate(uint256 rate);
+    event TriggerWithdraw(address sender);
 
     /*
     * @dev 1 ETH : [_rate] tokens

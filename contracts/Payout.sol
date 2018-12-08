@@ -32,6 +32,10 @@ contract Payout is Ownable {
         return _interval;
     }
 
+    function getDividends(address divOwner) public view returns (uint256) {
+        return _dividendBalance[divOwner];
+    }
+
     function calculate(address owner, address securityCoinContract, uint256 amount) public onlyOwner() {
         uint256 secBal = _securityBalance[owner][securityCoinContract];
         uint256 lasUp = _lastUpdated[owner][securityCoinContract];

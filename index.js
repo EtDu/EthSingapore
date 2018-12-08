@@ -14,18 +14,26 @@ app.use(express.static(__dirname + '/frontend/dist'))
 
 app.use('/', routes);
 routes.get('/', function (req, res) {
+    oracle.newKovanWeb3()
+    oracle.newExtDevWeb3()
     res.render('index')
 })
 
-routes.get('/getData/:coinAddr/:ownerAddr', async function (req, res) {
-    const rate = await oracle.getRate()
-
+routes.get('/getData/:coinAddr/:ownerAddr/:qty', async function (req, res) {
     const coinAddress = req.params.coinAddr
     const ownerAddress = req.params.ownerAddr
+    const amount = req.params.qty
+    
+    await oracle.calculate(ownerAddress, coinAddress, amount)
 
+    const rate = await oracle.getRate()
+    const interval = await oracle.getInterval()
+    const dividends = await oracle.getDividends(ownerAddress)
 
     res.status(200).send({
-
+        rate: rate,
+        interval: interval,
+        dividends: dividends
     })
 
 })
