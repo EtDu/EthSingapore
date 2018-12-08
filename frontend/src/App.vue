@@ -1,8 +1,11 @@
 <template>
   <div id="app">
-    <b-navbar type="light">
-      <b-nav-item to="companyui"> Security Issuance </b-nav-item>
-      <b-nav-item to="customerui"> Customer Dashboard </b-nav-item>
+    <b-container class="w-100 p-3 mb-1 bg-secondary">
+          <b-navbar type="light">
+      <b-navbar-nav>
+        <b-nav-item to="companyui"> Security Issuance </b-nav-item>
+        <b-nav-item to="customerui"> Customer Dashboard </b-nav-item>
+      </b-navbar-nav>
     </b-navbar>
     <div v-if="$store.state.web3.status == 'disabled'">
       Please unlock metamask.
@@ -13,6 +16,8 @@
     <div v-else>
       <router-view ></router-view>
     </div>
+    </b-container>
+
   </div>
 </template>
 
