@@ -3,3 +3,4 @@ extdev_private_key
 kovan_private_key
 frontend/node_modules
 .idea/*
+private_key

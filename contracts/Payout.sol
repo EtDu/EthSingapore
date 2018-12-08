@@ -7,8 +7,10 @@ contract Payout is Ownable {
     using SafeMath for uint256;
 
     event rateUpdate(bytes32 rate, uint256 newValue);
+    event securityBalanceUpdate(address owner, uint amount);
 
-    mapping(address => uint256) dividends;
+    mapping(address => uint256) securityBalance;
+    mapping(address => uint256) dividendBalance;
     mapping(address => uint256) lastUpdated;
     mapping(bytes32 => uint256) rates;
 
@@ -27,25 +29,32 @@ contract Payout is Ownable {
         emit rateUpdate(rate, rates[rate]);
     }
 
-    function calculate(address owner, uint256 token) public {
-        uint256 total;
-        uint256 rate = _calculateRate(token);
+    function updateSecurityBalance(address owner, uint amount) private {
+        securityBalance[owner] = securityBalance[owner].add(amount);
 
-        //can utilise delegatecalls for different algorithms?
-        total = rate.mul(now.sub(lastUpdated[owner]).div(_interval));
+        emit securityBalanceUpdate(owner, amount);
+    }
+
+    function calculate(address owner, uint256 token) public onlyOwner {
+        uint256 total;
+        // uint256 rate = _calculateRate(token);
+
+        total = securityBalance[owner].div(_interval).mul(now.sub(lastUpdated[owner]));
+
+        updateSecurityBalance(owner, token);
 
         lastUpdated[owner] = now;
 
-        dividends[owner].add(total);
+        dividendBalance[owner] = dividendBalance[owner].add(total);
 
 
     }
 
-    function _calculateRate(uint256 token) internal returns (uint256 rate){
+    // function _calculateRate(uint256 token) internal returns (uint256 rate){
 
-        //conditional parameters i.e. if token > 5 return rates['something']
+    //     //conditional parameters i.e. if token > 5 return rates['something']
 
-        return 1;
-    }
+    //     return 1;
+    // }
 
 }

@@ -193,7 +193,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 989,
+                        "referencedDeclaration": 985,
                         "src": "160:3:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -279,7 +279,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 989,
+                        "referencedDeclaration": 985,
                         "src": "219:3:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -843,7 +843,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 989,
+                        "referencedDeclaration": 985,
                         "src": "160:3:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -929,7 +929,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 989,
+                        "referencedDeclaration": 985,
                         "src": "219:3:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -1374,7 +1374,26 @@
     "name": "solc",
     "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "42": {
+      "events": {},
+      "links": {},
+      "address": "0x96e523a25ae5c8d4d9a223de3c20059f663d786c",
+      "transactionHash": "0x61f2645f7aa833715553b7ca661a1558e7b1f37b8e05122fe170a4c9943b2239"
+    },
+    "extdev-plasma-us1": {
+      "events": {},
+      "links": {},
+      "address": "0x1cec82d072ae7e872a38f7decd0048381ca9efda",
+      "transactionHash": "0xbc513b5cd2c5b63bd7056aaab05be3278420596f0889039779779349b19acddb"
+    },
+    "default": {
+      "events": {},
+      "links": {},
+      "address": "0x62d447b16902aab1f87e2d20e3a2da8cf493db8d",
+      "transactionHash": "0x938bc5311ca1651ee0e80191d476810f13aef4c303cd217518554355781ec055"
+    }
+  },
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-12-08T03:31:18.566Z"
+  "updatedAt": "2018-12-08T09:49:30.678Z"
 }

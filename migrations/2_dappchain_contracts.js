@@ -6,7 +6,7 @@ module.exports = function (deployer, network, accounts) {
     }
 
     deployer.then(async () => {
-        await deployer.deploy(payout)
+        await deployer.deploy(payout, 30)
         const payoutInstance = await payout.deployed()
 
         console.log('\n*************************************************************************\n')

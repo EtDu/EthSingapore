@@ -7,6 +7,7 @@ import "./ERC20.sol";
 * @dev
 */
 contract SecurityCoin is Ownable, ERC20 {
+    
     event securityPurchase(address purchaser, uint256 received);
     event rateUpdate(uint256 rate);
 
