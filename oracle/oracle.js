@@ -51,10 +51,17 @@ const Oracle = {
 
     newKovanContract: function () {
         const securityCoinJSON = JSON.parse(fs.readFileSync('./src/contracts/SecurityCoin.json', 'utf-8'))
-        const ABI = securityCoinJSON.abi
+        const coinABI = securityCoinJSON.abi
         this.kovanContractAddress = securityCoinJSON.networks['42'].address
+        
+        const factoryJSON = JSON.parse(fs.readFileSync('./src/contracts/SecurityCoinFactory.json', 'utf-8'))
+        const factoryABI = factoryJSON.abi
+        this.factoryAddress = factoryJSON.networks['42'].address
 
-        this.kovanContractInst.securityCoinContract = new this.kovanWeb3Inst.eth.Contract(ABI, this.kovanContractAddress, { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })
+
+        this.kovanContractInst.securityCoinContract = new this.kovanWeb3Inst.eth.Contract(coinABI, this.kovanContractAddress, { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })
+
+        this.kovanContractInst.factoryContract = new this.kovanWeb3Inst.eth.Contract(factoryABI, this.factoryAddress, { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })
         
 
         this.listenForKovanEvents()
@@ -62,7 +69,9 @@ const Oracle = {
     },
 
     listenForKovanEvents: function () {
-        this.kovanContractInst.securityCoinContract.events.NewSecurityCoin({ fromBlock: 0, toBlock: 'latest' }, (err, events) => {
+        console.log(this.kovanContractInst.securityCoinContract.events)
+        
+        this.kovanContractInst.factoryContract.events.NewSecurityCoin({ fromBlock: 0, toBlock: 'latest' }, (err, events) => {
             if (err) {
                 console.log(err)
             } else {

@@ -1,4 +1,4 @@
-const securityCoin = artifacts.require('./SecurityCoin.sol')
+const securityCoin = artifacts.require('SecurityCoinFactory')
 
 module.exports = function (deployer, network, accounts) {
     if (network !== 'kovan') {
@@ -6,7 +6,7 @@ module.exports = function (deployer, network, accounts) {
     }
 
     deployer.then(async () => {
-        await deployer.deploy(securityCoin, 1000000, 5, 'securityCoin', 'SC', 18)
+        await deployer.deploy(securityCoin)
         const securityCoinInstance = await securityCoin.deployed()
 
         console.log('\n*************************************************************************\n')
