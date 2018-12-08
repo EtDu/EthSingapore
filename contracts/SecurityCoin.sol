@@ -9,22 +9,19 @@ import "./ERC20.sol";
 
 contract SecurityCoinFactory {
     event NewSecurityCoin(address indexed newCoinAdress, uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals);
+    event TriggerWithdraw(address owner);
 
     address[] public tokens;
 
     function newSecurityCoin(address owner, uint256 totalSupply, uint256 initialRate, string name, string symbol, uint8 decimals) public returns (address)
     {
-
-        
-
         address newCoinAddress = new SecurityCoin(owner, totalSupply, initialRate, name, symbol, decimals);
 
         tokens.push(newCoinAddress);
 
-        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
-
         return newCoinAddress;
 
+        emit NewSecurityCoin(newCoinAddress, totalSupply, initialRate, name, symbol, decimals);
     }
 
     function getTokenAddress(uint256 index) public view returns (address) {
@@ -33,7 +30,7 @@ contract SecurityCoinFactory {
 }
 
 contract SecurityCoin is Ownable, ERC20 {
-    
+
     event securityPurchase(address purchaser, uint256 received);
     event rateUpdate(uint256 rate);
 
@@ -64,5 +61,9 @@ contract SecurityCoin is Ownable, ERC20 {
         _rate = newRate;
 
         emit rateUpdate(_rate);
+    }
+
+    function triggerWithdraw() public {
+        emit TriggerWithdraw(msg.sender);
     }
 }

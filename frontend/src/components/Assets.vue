@@ -1,17 +1,14 @@
 <template>
-  <b-table hover :items="items" :fields="fields"></b-table>
+<div></div>
 </template>
 <script>
 export default {
   name: 'Assets',
-  data () {
-    return {
-      fields: [ 'Security', 'Amount'],
-      items: [
-        { Security: 'Shitcoin', Amount: '600' },
-        { Security: 'Bitchcoin', Amount: '700' }
-      ]
-    }
+  props: {
+    securities: Array
+  },
+  mount () {
+    console.log(this.securities)
   }
 }
 </script>

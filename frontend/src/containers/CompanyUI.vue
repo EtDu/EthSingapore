@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-card>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group id="namegroup"
                     label="Token Name"
@@ -64,10 +64,11 @@
       <b-button type="submit" variant="primary">Submit</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
-  </div>
+  </b-card>
 </template>
 
 <script>
+import store from '../store'
 export default {
   data () {
     return {
@@ -83,18 +84,24 @@ export default {
     }
   },
   methods: {
-    onSubmit (evt) {
+    async onSubmit (evt) {
       evt.preventDefault();
-      alert(JSON.stringify(this.form));
+      store.state.web3.factoryContract.functions.newSecurityCoin(
+        parseInt(this.form.tokenSupply),
+        parseInt(this.form.payoutInterval),
+        this.form.tokenName,
+        this.form.tokenTicker,
+        18
+      )
     },
     onReset (evt) {
       evt.preventDefault();
-      form.tokenName = '';
-      from.tokenTicker = '';
-      form.tokenSupply = '';
-      form.payoutInterval = '';
-      form.payoutAmount = '';
-      form.withdrawalFee = '';
+      this.form.tokenName = '';
+      this.from.tokenTicker = '';
+      this.form.tokenSupply = '';
+      this.form.payoutInterval = '';
+      this.form.payoutAmount = '';
+      this.form.withdrawalFee = '';
       this.show = false;
       this.$nextTick(() => { this.show = true });
     }
