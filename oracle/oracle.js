@@ -77,7 +77,7 @@ const Oracle = {
                         if (err) {
                             console.log(err)
                         } else {
-                            this.extDevContractInst.payoutContract.methods.calculate(newEvents.returnValues[0], newEvents.returnValues[1]).send()
+                            this.extDevContractInst.payoutContract.methods.calculate(newEvents.returnValues[0], this.tokenAddrs[i] ,newEvents.returnValues[1]).send()
                         }
                     })
                     
@@ -90,12 +90,11 @@ const Oracle = {
         })
 
 
-        this.kovanContractInst.securityCoinContract.events.securityPurchase({ fromBlock: 0, toBlock: 'latest'},(err, events) => {
+        this.kovanContractInst.securityCoinContract.events.TriggerWithdraw({ fromBlock: 0, toBlock: 'latest'},(err, events) => {
             if (err) {
                 console.log(err)
             } else {
-                console.log('=========' + events.returnValues)
-                this.extDevContractInst.payoutContract.methods.calculate(events.returnValues[0], events.returnValues[1]).send()
+                this.extDevContractInst.payoutContract.methods.withdraw(events.returnValues[0]).send()
             }
         })
     },
@@ -138,11 +137,11 @@ const Oracle = {
     },
 
     listenForExtDevEvents: function() {
-        this.extDevContractInst.payoutContract.events.dividendsCalculated({}, (err, event) => {
+        this.extDevContractInst.payoutContract.events.dividendsCalculated((err, event) => {
             if (err) {
                 return console.error(err)
             }
-            console.log(event.returnValues)
+            event.returnValues[0]
         })
     },
 
