@@ -6,6 +6,7 @@ import "./SafeMath.sol";
 contract Payout is Ownable {
     using SafeMath for uint256;
 
+    mapping(address => uint256) securityBalance;
     mapping(address => uint256) dividends;
     mapping(address => uint256) lastUpdated;
 
@@ -27,10 +28,14 @@ contract Payout is Ownable {
     function calculate(address owner, uint256 token) public {
         uint256 total;
 
-        total = token.div(_interval).mul(now.sub(lastUpdated[owner]));
+        total = securityBalance[owner].div(_interval).mul(now.sub(lastUpdated[owner]));
+
+        securityBalance[owner] = token;
 
         lastUpdated[owner] = now;
 
         dividends[owner].add(total);
     }
+
+    function
 }
