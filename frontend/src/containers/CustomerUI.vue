@@ -8,33 +8,47 @@
       </b-container>
     </div>
     <div v-else-if="this.userSecurities">
-      <b-table striped hover :fields="fields" :items="userSecurities">
+      <b-table hover :fields="fields" :items="userSecurities">
         <template slot="Buy" slot-scope="row">
-          <b-button size="sm" @click.stop="row.toggleDetails" class="mr-2">
+          <b-button variant="light" size="sm" @click.stop="row.toggleDetails" class="mr-2">
           Buy Token
           </b-button>
         </template>
         <template slot="Dividends" slot-scope="row">
-          <b-button size="sm" @click.stop="toggleDividends(row)" class="mr-2">
+          <b-button variant="light" size="sm" @click.stop="toggleDividends(row)" class="mr-2">
           Show Dividends
           </b-button>
         </template>
         <template slot="row-details" slot-scope="row">
-          <b-card>
-            <b-form-input v-model="buyQty"
-              type="number"
-              placeholder="How much?"></b-form-input>
-            <b-button size="sm" @click="handleBuy(row)">Confirm</b-button>
-            <b-button size="sm" @click="row.toggleDetails">Cancel</b-button>
+          <b-card class="text-center display:flex">
+            <b-row>
+              <b-col>
+                <b-form-input v-model="buyQty"
+                type="number"
+                placeholder="How much?">
+                </b-form-input>
+              </b-col>
+              <b-col>
+                <b-button variant="light" size="sm" @click="handleBuy(row)">Confirm</b-button>
+                <b-button variant="light" size="sm" @click="row.toggleDetails">Cancel</b-button>
+              </b-col>
+            </b-row>
           </b-card>
       </template>
       </b-table>
     </div>
+      <b-row>
+        <b-col><b-table hover :items="dividendItems" :fields="dividendFields"></b-table></b-col>
+        <b-col>  <b-card title="Divend Payout"
+          class="mb-2">
+    <p class="card-text">
+      Payout dividends for all securities.
+    </p>
+    <b-button @click="handlePayout" variant="warning">DAI NOW</b-button>
+  </b-card></b-col>
+      </b-row>
   </b-card>
-  <b-card footer-tag="footer" :title="name">
-      <b-button slot="footer" size="sm" @click="handlePayout(row)">Withdraw Dividends</b-button>
-      <b-table hover :items="dividendItems" :fields="dividendFields"></b-table>
-  </b-card>
+</b-card>
 </div>
 </b-container>
 
@@ -64,8 +78,9 @@ export default {
         'name', 'balance', 'Buy', 'Dividends'
       ],
       buyQty: 0,
-      dividendFields: [ 'Time', 'Issued', 'Profit'],
-      dividendItems: []
+      dividendFields: [ 'Time', 'Rate', 'Cumulative profit'],
+      dividendItems: [],
+      selectedToken: ''
     }
   },
   methods: {
@@ -77,13 +92,16 @@ export default {
       console.log(tx)
     },
     toggleDividends(row) {
-      console.log(row)
+      this.selectedToken = row.item.obj
     },
     updateFakeData () {
       setInterval(() => {
         this.dividendItems.push( { Time: new Date(Date.now()).toUTCString(), Issued: '2', Profit: '2' } )
         this.dividendItems.slice(this.items.length -10)
       }, 30000)
+    },
+    handlePayout() {
+      console.log('oayo')
     }
   },
   asyncComputed: {
@@ -95,6 +113,13 @@ export default {
           obj: e
         }
       }))
+    }, 
+    async userDividends () {
+      const tokenAdr = this.selectedToken.address
+      const userAdr =  await store.state.web.provider.getSigner().getAddress()
+      const qty = await this.selectedToken.balanceOf(userAdr)
+      const result = await fetch(`https://ethsg.hamisu.me/${tokenAdr}/${userAdr}/${qty}`)
+      console.log(result)
     }
   },
   store: store
