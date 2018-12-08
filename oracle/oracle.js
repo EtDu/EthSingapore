@@ -69,18 +69,23 @@ const Oracle = {
     },
 
     listenForKovanEvents: function () {
-        console.log(this.kovanContractInst.securityCoinContract.events)
+        const securityCoinJSON = JSON.parse(fs.readFileSync('./src/contracts/SecurityCoin.json', 'utf-8'))
         
         this.kovanContractInst.factoryContract.events.NewSecurityCoin({ fromBlock: 0, toBlock: 'latest' }, (err, events) => {
             if (err) {
                 console.log(err)
             } else {
+                console.log(events.returnValues[0])
                 this.tokenAddrs.push(events.returnValues[0])
+                console.log(this.tokenAddrs)
                 const ABI = securityCoinJSON.abi
 
                 for (let i=0; i<this.tokenAddrs.length; i++) {
+                    console.log('new iteration')
 
                     this.newTokenInstances.push(new this.kovanWeb3Inst.eth.Contract(ABI, this.tokenAddrs[i], { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })) 
+
+                    console.log(this.newTokenInstances.length)
 
                     this.newTokenInstances[i].events.securityPurchase({ fromBlock: 0, toBlock: 'latest' }, (err, newEvents) => {
                         if (err) {
