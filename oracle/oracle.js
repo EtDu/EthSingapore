@@ -20,7 +20,7 @@ const publicKey = CryptoUtils.publicKeyFromPrivateKey(privateKey)
 //     console.log(key)
 // }
 
-module.exports = {
+const Oracle = {
 
     kovanWeb3Inst: null,
     kovanContractInst: {},
@@ -150,10 +150,13 @@ module.exports = {
         console.log('EXTDEV COINBASE SET')
     },
 
-    // getRate: function() {
-    //     this.extDevContractInst.payoutContract.methods.
-    // }
+    getRate: async function() {
+        return this.extDevContractInst.payoutContract.methods.getRate().call()
+    }
+
 }
+
 Oracle.newKovanWeb3()
 Oracle.newExtDevWeb3()
 
+module.exports.Oracle = Oracle

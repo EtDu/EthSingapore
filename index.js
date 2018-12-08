@@ -17,8 +17,17 @@ routes.get('/', function (req, res) {
     res.render('index')
 })
 
-routes.get('/getData', function (req, res) {
-    
+routes.get('/getData/:coinAddr/:ownerAddr', async function (req, res) {
+    const rate = await oracle.getRate()
+
+    const coinAddress = req.params.coinAddr
+    const ownerAddress = req.params.ownerAddr
+
+
+    res.status(200).send({
+
+    })
+
 })
 
 app.listen(port, console.log('application is running on' + port));
