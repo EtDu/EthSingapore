@@ -87,6 +87,7 @@ export default {
     async onSubmit (evt) {
       evt.preventDefault();
       store.state.web3.factoryContract.functions.newSecurityCoin(
+        await store.state.web3.provider.getSigner().getAddress(),
         parseInt(this.form.tokenSupply),
         parseInt(this.form.payoutInterval),
         this.form.tokenName,
