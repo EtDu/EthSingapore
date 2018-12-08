@@ -28,7 +28,7 @@ contract ERC20 is ERC20Detailed {
     uint256 private _totalSupply;
 
     constructor  (uint256 totalSupply, string name, string symbol, uint8 decimals) public ERC20Detailed(name, symbol, decimals) {
-        _totalSupply = totalSupply;
+        _totalSupply = totalSupply.mul(10 ** decimals);
         _balances[msg.sender] = _totalSupply;
     }
 
