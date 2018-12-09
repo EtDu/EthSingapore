@@ -41,7 +41,6 @@ export default {
   text-align: center;
   background-color: #ED4545;
   color: #ED4545;
-  
 }
 .bg-ethsg {
     background-color: #ED4545!important;

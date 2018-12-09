@@ -2,6 +2,7 @@
 <b-container class="text-center">
 <div>
   <b-card align="center" title='Your Securities'>
+        <b-row>
     <div v-if="!$store.state.web3.eventsLoaded">
       <b-container class="mx-auto">
         <ping-pong class="mx-auto"/>
@@ -12,11 +13,6 @@
         <template slot="Buy" slot-scope="row">
           <b-button variant="light" size="sm" @click.stop="row.toggleDetails" class="mr-2">
           Buy Token
-          </b-button>
-        </template>
-        <template slot="Dividends" slot-scope="row">
-          <b-button variant="light" size="sm" @click.stop="toggleDividends(row)" class="mr-2">
-          Show Dividends
           </b-button>
         </template>
         <template slot="row-details" slot-scope="row">
@@ -37,12 +33,11 @@
       </template>
       </b-table>
     </div>
-      <b-row>
-        <b-col><b-table hover :items="dividendItems" :fields="dividendFields"></b-table></b-col>
-        <b-col>  <b-card title="Divend Payout"
+
+        <b-col>  <b-card title="Dividend Payout"
           class="mb-2">
     <p class="card-text">
-      Payout dividends for all securities.
+      Payout {{dividends}}
     </p>
     <b-button @click="handlePayout" variant="warning">DAI NOW</b-button>
   </b-card></b-col>
@@ -61,6 +56,7 @@ import Assets from '../components/Assets'
 import Payouts from '../components/Payouts'
 import { PingPong } from 'vue-loading-spinner'
 import { ethers } from 'ethers'
+import { setInterval, setTimeout } from 'timers';
 Vue.use(AsyncComputed)
 export default {
   components: {
@@ -68,18 +64,14 @@ export default {
     Payouts,
     PingPong
   },
-  mounted () {
-    this.updateFakeData()
-  },
   data () {
     return {
       loading: true,
       fields: [
-        'name', 'balance', 'Buy', 'Dividends'
+        'name', 'balance', 'Buy'
       ],
       buyQty: 0,
-      dividendFields: [ 'Time', 'Rate', 'Cumulative profit'],
-      dividendItems: [],
+      dividends: 0,
       selectedToken: ''
     }
   },
@@ -94,6 +86,14 @@ export default {
     toggleDividends(row) {
       this.selectedToken = row.item.obj
     },
+    async getUserDividends () {
+      const tokenAdr = this.selectedToken.address
+      const userAdr =  await store.state.web3.provider.getSigner().getAddress()
+      const qty = await this.selectedToken.balanceOf(userAdr)
+      const result = await fetch(`getData/${tokenAdr}/${userAdr}/${qty}`)
+      const json = await result.json()
+      dividends = parseInt(json.dividends)/18
+    },
     async handlePayout() {
       const tx = await this.selectedToken.triggerWithdraw()
       console.log(tx)
@@ -101,20 +101,16 @@ export default {
   },
   asyncComputed: {
     async userSecurities () {
-      return Promise.all(store.state.web3.securities.map(async e => {
+      const secs = await Promise.all(store.state.web3.securities.map(async e => {
         return {
           name: await e.name(),
           balance: `${await e.balanceOf(store.state.web3.provider.getSigner().getAddress())} ${await e.symbol()}`,
           obj: e
         }
       }))
-    }, 
-    async userDividends () {
-      const tokenAdr = this.selectedToken.address
-      const userAdr =  await store.state.web3.provider.getSigner().getAddress()
-      const qty = await this.selectedToken.balanceOf(userAdr)
-      const result = await fetch(`https://ethsg.hamisu.me/${tokenAdr}/${userAdr}/${qty}`)
-      console.log(result)
+      //this.selectedToken = secs[0].obj
+      setInterval(this.getUserDividends, 30000)
+      return secs;
     }
   },
   store: store
