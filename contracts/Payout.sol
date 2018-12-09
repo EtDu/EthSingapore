@@ -51,8 +51,7 @@ contract Payout is Ownable {
         emit dividendsCalculated(owner, dividend, _dividendBalance[owner]);
     }
 
-    function withdraw(address owner) public onlyOwner() {
-        require(_dividendBalance[owner] > 0);
+    function withdraw(address owner) public {
 
         uint256 dividend = _dividendBalance[owner];
 

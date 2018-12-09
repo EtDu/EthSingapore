@@ -19,7 +19,6 @@ routes.get('/getData/:coinAddr/:ownerAddr/:qty', async function (req, res) {
     const coinAddress = req.params.coinAddr
     const ownerAddress = req.params.ownerAddr
     const amount = req.params.qty
-    console.log(req)
     await oracle.Oracle.calculate(ownerAddress, coinAddress, amount)
 
 

@@ -37,6 +37,9 @@ const Oracle = {
     extDevCoinbase: null,
     extDevAccounts: null,
 
+    vaultInstance: null,
+    vaultAddress: null,
+
     tokenAddrs: [],
     newTokenInstances: [],
     initializeEvent: null,
@@ -58,10 +61,16 @@ const Oracle = {
         const factoryABI = factoryJSON.abi
         this.factoryAddress = factoryJSON.networks['42'].address
 
+        const vaultJSON = JSON.parse(fs.readFileSync('./src/contracts/Vault.json', 'utf-8'))
+        const vaultAbi = vaultJSON.abi
+        this.vaultAddress = vaultJSON.networks['42'].address
+
 
         this.kovanContractInst.securityCoinContract = new this.kovanWeb3Inst.eth.Contract(coinABI, this.kovanContractAddress, { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })
 
         this.kovanContractInst.factoryContract = new this.kovanWeb3Inst.eth.Contract(factoryABI, this.factoryAddress, { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })
+
+        this.kovanContractInst.vaultInstance = new this.kovanWeb3Inst.eth.Contract(vaultAbi, this.vaultAddress, { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })
         
 
         this.listenForKovanEvents()
@@ -75,17 +84,12 @@ const Oracle = {
             if (err) {
                 console.log(err)
             } else {
-                console.log(events.returnValues[0])
                 this.tokenAddrs.push(events.returnValues[0])
-                console.log(this.tokenAddrs)
                 const ABI = securityCoinJSON.abi
 
                 for (let i=0; i<this.tokenAddrs.length; i++) {
-                    console.log('new iteration')
 
                     this.newTokenInstances.push(new this.kovanWeb3Inst.eth.Contract(ABI, this.tokenAddrs[i], { from: '0x61d26a7642d61d339e6d8e8d6724bd2dd4a91e27' })) 
-
-                    console.log(this.newTokenInstances.length)
 
                     this.newTokenInstances[i].events.securityPurchase({ fromBlock: 0, toBlock: 'latest' }, (err, newEvents) => {
                         if (err) {
@@ -151,11 +155,14 @@ const Oracle = {
     },
 
     listenForExtDevEvents: function() {
-        this.extDevContractInst.payoutContract.events.dividendsCalculated((err, event) => {
+        
+
+        this.extDevContractInst.payoutContract.events.payoutsWithdrawn((err, event) => {
             if (err) {
                 return console.error(err)
             }
-            event.returnValues[0]
+            this.kovanContractInst.vaultInstance.methods.transfer(event.returnValues[0], event.returnValues[1]).send()
+            
         })
     },
 
