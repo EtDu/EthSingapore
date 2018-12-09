@@ -108,7 +108,7 @@ export default {
           obj: e
         }
       }))
-      //this.selectedToken = secs[0].obj
+      this.selectedToken = secs[0].obj
       setInterval(this.getUserDividends, 30000)
       return secs;
     }
