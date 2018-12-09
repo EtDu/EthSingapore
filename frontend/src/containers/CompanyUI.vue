@@ -1,5 +1,5 @@
 <template>
-  <b-card>
+  <b-card >
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group id="namegroup"
                     label="Token Name"
