@@ -2,7 +2,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "ethereumjs-wallet": "^0.6.2",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "loom-js": "^1.36.0",
     "loom-truffle-provider": "^0.8.0",
     "nodemon": "^1.18.7",
